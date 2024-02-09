@@ -1,0 +1,175 @@
+ <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relógio e Previsão do Tempo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 20px; /* Adiciona margem superior para o relógio */
+      background-color: #1f1f1f; /* Cor de fundo escura */
+      color: #fff; /* Cor do texto */
+    }
+    #clock {
+      font-size: 120px;
+      margin-bottom: 10px;
+    }
+    #dayOfWeek {
+      font-size: 54px;
+      margin-bottom: 10px;
+    }
+    #city {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    .weather-info {
+      display: inline-block;
+      padding: 20px;
+      border-radius: 20px;
+      background-color: #333; /* Cor de fundo da caixa de informações */
+      margin-bottom: 20px;
+    }
+    #temperature {
+      font-size: 86px;
+    }
+    #feelsLike {
+      font-size: 40px;
+      margin-top: 10px;
+    }
+    #minMaxTemp {
+      font-size: 30px;
+      margin-top: 10px;
+    }
+    #weatherDescription {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    #rainChance {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    .weather-icon {
+      font-size: 88px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    #coffeeAlert {
+      font-size: 100px;
+      color: red;
+      margin-top: 20px;
+      display: none; /* Oculta por padrão */
+    }
+  </style>
+</head>
+<body>
+  <div id="clock"></div>
+  <div id="dayOfWeek"></div>
+  <div id="city"></div>
+  <div class="weather-info">
+    <div id="temperature"></div>
+    <div id="feelsLike"></div>
+    <div id="minMaxTemp"></div>
+  </div>
+  <div id="weatherDescription"></div>
+  <div id="rainChance"></div>
+  <div id="coffeeAlert">Hora do Café!</div>
+
+  <script>
+    function updateClock() {
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+      var seconds = now.getSeconds();
+
+      var days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+      var dayOfWeek = days[now.getDay()]; // Obtém o dia da semana atual
+
+      hours = hours < 10 ? '0' + hours : hours;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+
+      var timeString = hours + ':' + minutes + ':' + seconds;
+      document.getElementById('clock').innerText = timeString;
+      document.getElementById('dayOfWeek').innerText = dayOfWeek; // Define o dia da semana
+
+      // Verifica se é hora do café
+      checkCoffeeTime(hours, minutes);
+    }
+
+    function getWeather() {
+      var apiKey = '1ec2ea746ca369f6eedde323768c153f';
+      var city = 'Joinville';
+      var state = 'SC';
+      var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + ',BR&appid=' + apiKey + '&units=metric&lang=pt_br';
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Resposta da API:', data);
+
+          if (data && data.name && data.sys && data.sys.country && data.main && data.main.temp && data.main.feels_like && data.main.temp_min && data.main.temp_max && data.weather && data.weather.length > 0 && data.weather[0].description && data.clouds && data.clouds.all) {
+            var city = data.name;
+            var temperature = data.main.temp;
+            var feelsLike = data.main.feels_like;
+            var temperatureMin = data.main.temp_min;
+            var temperatureMax = data.main.temp_max;
+            var weatherConditionCode = data.weather[0].id; // Código de condição do tempo
+
+            var iconClass = getWeatherIcon(weatherConditionCode);
+
+            document.getElementById('city').innerText = 'Joinville-SC';
+            document.getElementById('temperature').innerHTML = `<i class="${iconClass} weather-icon"></i>${temperature}°C`;
+            document.getElementById('feelsLike').innerText = `Sensação Térmica: ${feelsLike}°C`;
+            document.getElementById('minMaxTemp').innerText = `Mínima: ${temperatureMin}°C / Máxima: ${temperatureMax}°C`;
+            document.getElementById('weatherDescription').innerText = data.weather[0].description;
+            document.getElementById('rainChance').innerText = `Chance de Chuva: ${data.clouds.all}%`;
+          } else {
+            console.error('Dados de clima inválidos:', data);
+            document.getElementById('temperature').innerText = 'Dados de clima inválidos';
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao obter o clima:', error);
+          document.getElementById('temperature').innerText = 'Erro ao obter o clima';
+        });
+    }
+
+    function getWeatherIcon(weatherConditionCode) {
+      // Mapeia o código de condição do tempo para ícones Font Awesome
+      if (weatherConditionCode >= 200 && weatherConditionCode < 300) {
+        return 'fas fa-bolt'; // Trovão
+      } else if (weatherConditionCode >= 300 && weatherConditionCode < 600) {
+        return 'fas fa-cloud-rain'; // Chuva
+      } else if (weatherConditionCode >= 600 && weatherConditionCode < 700) {
+        return 'fas fa-snowflake'; // Neve
+      } else if (weatherConditionCode >= 700 && weatherConditionCode < 800) {
+        return 'fas fa-smog'; // Neblina, fumaça, etc.
+      } else if (weatherConditionCode === 800) {
+        return 'fas fa-sun'; // Céu limpo
+      } else if (weatherConditionCode >= 801 && weatherConditionCode < 900) {
+        return 'fas fa-cloud'; // Nuvens
+      } else {
+        return 'fas fa-question'; // Ícone padrão para códigos desconhecidos
+      }
+    }
+
+    function checkCoffeeTime(hours, minutes) {
+      if ((hours === 8 && minutes === 19) || (hours === 15 && minutes === 19)) {
+        document.getElementById('coffeeAlert').style.display = 'block'; // Exibe o alerta
+        // Adicione aqui qualquer lógica para reproduzir um som de aviso
+      } else {
+        document.getElementById('coffeeAlert').style.display = 'none'; // Oculta o alerta
+      }
+    }
+
+    updateClock();
+    getWeather();
+
+    setInterval(updateClock, 1000);
+    setInterval(getWeather, 600000);
+  </script>
+</body>
+</html>

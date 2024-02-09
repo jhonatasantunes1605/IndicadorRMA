@@ -1,0 +1,190 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dados da planilha</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: black; /* Set the background color to black */
+      color: white; /* Set text color to white */
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden; /* Clip content inside the rounded corners */
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    th {
+      background-color: #007bff;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .highlight {
+      background-color: #ff5f5f !important;
+      color: white;
+    }
+
+    .highlight td {
+      background-color: #ff5f5f !important;
+      color: white;
+    }
+
+    .counter-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .counter {
+      font-size: 18px;
+    }
+
+    @media print {
+      body {
+        font-size: 10pt;
+      }
+
+      .container {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        display: none;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th, td {
+        padding: 5px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+    }
+  </style>
+  <script>
+    $(document).ready(function() {
+      var apiKey = 'AIzaSyAIB-qCRdOAgEJYuPAxNTEsoR2Ijt33-TE';
+      var spreadsheetId = '1jARX3HPaU5HT6pOmY8upjxjvCPmwRAlbc3WsfKMTSks';
+      var range = 'AGUARDANDO BAIXA!A2:i';
+ var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + range + '?key=' + apiKey;
+    var maxRecords = 10;
+    var allRecords = [];
+    var oldRecords = [];
+
+    function updateTable() {
+      $.get(url, function(data) {
+        var values = data.values;
+        var tableBody = $('#table-body');
+        allRecords = values.slice(1, maxRecords + 1);
+        tableBody.empty();
+
+        for (var i = 0; i < allRecords.length; i++) {
+          var row = allRecords[i];
+          var rowHtml = '';
+
+          for (var j = 0; j < row.length; j++) {
+            rowHtml += '<td>' + row[j] + '</td>';
+          }
+
+          var rowElement = $('<tr>' + rowHtml + '</tr>');
+
+          if (i === 0) {
+            rowElement.addClass('highlight');
+          } else if (row[2] === allRecords[0][2]) {
+            rowElement.addClass('highlight');
+            rowElement.find('td').addClass('highlight');
+          }
+
+          tableBody.append(rowElement);
+        }
+
+        if (JSON.stringify(oldRecords) !== JSON.stringify(allRecords)) {
+          playSound();
+          oldRecords = JSON.parse(JSON.stringify(allRecords));
+        }
+      });
+    }
+
+    function playSound() {
+  try {
+    var audio = new Audio('https://themushroomkingdom.net/sounds/wav/smw/smw_lost_a_life.wav');
+    audio.play();
+  } catch (error) {
+    console.error('Erro ao reproduzir som:', error);
+  }
+}
+
+    updateTable();
+    setInterval(updateTable, 1000);
+  });
+</script>
+</head>
+<body>
+   <div class="container">
+   
+
+    <div class="counter-container">
+      <img src="https://img.terabyteshop.com.br/terabyte-logo.svg" alt="Terabyte Logo" height="100">
+      <div class="counter">Total de registros: <span id="record-counter">0</span></div>
+    </div>
+     <h1>Fila de Testes</h1>
+
+    <div id="table-container">
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th class="sortable">DATA</th>
+            <th class="sortable">TICKET</th>
+            <th class="sortable">PEDIDO</th>
+            <th class="sortable">TIPO</th>
+            <th class="sortable">CATEGORIA</th>
+            <th class="sortable">ID</th>
+            <th class="sortable">MARCA</th>
+            <th class="sortable">PRODUTO</th>
+            <th class="sortable">SERIAL</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <div id="sound"></div>
+  </div>
+</body>
+</html>

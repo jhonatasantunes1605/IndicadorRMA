@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>Alternância a cada minuto</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .codigo-container {
+      display: none;
+      text-align: center;
+      height: 100vh; /* Ocupar 100% da altura da viewport */
+    }
+
+    .visible {
+      display: block !important;
+    }
+
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div id="codigo1" class="codigo-container visible">
+  <iframe src="Climaehora.html"></iframe>
+</div>
+
+<div id="codigo2" class="codigo-container">
+  <iframe src="IndicadoresRMA.html"></iframe>
+</div>
+
+<div id="codigo3" class="codigo-container">
+  <iframe src="IndicadoresRMA2.html"></iframe>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var codigos = document.querySelectorAll(".codigo-container");
+    var currentIndex = 0;
+
+    function alternarCodigos() {
+      codigos[currentIndex].classList.remove("visible");
+      currentIndex = (currentIndex + 1) % codigos.length;
+      codigos[currentIndex].classList.add("visible");
+    }
+
+    setInterval(alternarCodigos, 6000); // Alternar a cada 1 minuto (60.000 milissegundos)
+  });
+</script>
+
+</body>
+</html>
