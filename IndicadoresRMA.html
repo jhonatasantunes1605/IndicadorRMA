@@ -130,39 +130,41 @@
         font-size: 40px;
       }
     }
-  </style>
   <script>
     $(document).ready(function () {
-      var apiKey = 'AIzaSyAIB-qCRdOAgEJYuPAxNTEsoR2Ijt33-TE';
-      var spreadsheetId1 = '19A-Wgk9U-cZc7Pieq0sGTYDjnUxNk9Qnl9yPmwXwStM';
-      var range1 = 'INDICADOR HTML!E:F';
+        var apiKey = 'AIzaSyAIB-qCRdOAgEJYuPAxNTEsoR2Ijt33-TE';
+        var spreadsheetId1 = '19A-Wgk9U-cZc7Pieq0sGTYDjnUxNk9Qnl9yPmwXwStM';
+        var range1 = 'INDICADOR HTML!E:F';
 
-      var spreadsheetId2 = '19A-Wgk9U-cZc7Pieq0sGTYDjnUxNk9Qnl9yPmwXwStM';
-      var range2 = 'INDICADOR HTML!A:B';
+        var spreadsheetId2 = '19A-Wgk9U-cZc7Pieq0sGTYDjnUxNk9Qnl9yPmwXwStM';
+        var range2 = 'INDICADOR HTML!A:B';
 
-      var url1 = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId1 + '/values/' + range1 + '?key=' + apiKey;
-      var url2 = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId2 + '/values/' + range2 + '?key=' + apiKey;
+        var url1 = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId1 + '/values/' + range1 + '?key=' + apiKey;
+        var url2 = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId2 + '/values/' + range2 + '?key=' + apiKey;
+        
+        // URL direto para o arquivo de áudio no seu repositório GitHub
+        var audioUrl = 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/Bill_Conti_Gonna_Fly_Now_Ringtone.mp3';
 
-      var allRecords1 = [];
-      var allRecords2 = [];
+        var allRecords1 = [];
+        var allRecords2 = [];
 
-      // Variável para rastrear se o som já foi emitido para o número 0 em cada indicador
-      var soundPlayedForZero = {
-        row1: false,
-        row2: false,
-        row3: false,
-        row4: false
-      };
+        // Variável para rastrear se o som já foi emitido para o número 0 em cada indicador
+        var soundPlayedForZero = {
+            row1: false,
+            row2: false,
+            row3: false,
+            row4: false
+        };
 
-      // Função para emitir o som e atualizar a variável correspondente
-      function playSoundAndMarkAsPlayed(indicatorId) {
-        // Emitir o som (substitua 'path/to/sound.mp3' pelo caminho do seu arquivo de som)
-        var audio = new Audio('https://github.com/jhonatasantunes1605/IndicadorRMA/blob/main/Bill_Conti_Gonna_Fly_Now_Ringtone.mp3');
-        audio.play();
+        // Função para emitir o som e atualizar a variável correspondente
+        function playSoundAndMarkAsPlayed(indicatorId) {
+            // Emitir o som
+            var audio = new Audio(audioUrl);
+            audio.play();
 
-        // Atualizar a variável indicando que o som foi emitido para este indicador
-        soundPlayedForZero[indicatorId] = true;
-      }
+            // Atualizar a variável indicando que o som foi emitido para este indicador
+            soundPlayedForZero[indicatorId] = true;
+        }
 
       function updateIndicator(url, container1, container2, indicatorId) {
         $.get(url, function (data) {
