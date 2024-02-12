@@ -202,8 +202,7 @@ $(document).ready(function () {
             indicatorHtml += '<div class="indicator-icon notified-zero">' + value + '</div>';
           } else {
             // Se o 0 já foi notificado anteriormente, exibir em verde claro
-            indicatorHtml += '<div class="indicator-icon notified-zero pulse" style="background-color: #green;">' + value + '</div>';
-
+            indicatorHtml += '<div class="indicator-icon notified-zero" style="background-color: #008000;">' + value + '</div>';
           }
         } else if (value === undefined) {
           // Se o valor for indefinido, exibir ícone de relógio
@@ -238,7 +237,6 @@ $(document).ready(function () {
     updateIndicator(url2, '#row3', '#row4', 'row3');
   }, 5000); // 5000 milliseconds = 5 seconds
 });
-
 
 
 
