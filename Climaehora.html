@@ -56,12 +56,6 @@
       vertical-align: middle;
       margin-right: 10px;
     }
-    #coffeeAlert {
-      font-size: 100px;
-      color: red;
-      margin-top: 20px;
-      display: none; /* Oculta por padrão */
-    }
   </style>
 </head>
 <body>
@@ -75,7 +69,6 @@
   </div>
   <div id="weatherDescription"></div>
   <div id="rainChance"></div>
-  <div id="coffeeAlert">Hora do Café!</div>
 
   <script>
     function updateClock() {
@@ -94,15 +87,12 @@
       var timeString = hours + ':' + minutes + ':' + seconds;
       document.getElementById('clock').innerText = timeString;
       document.getElementById('dayOfWeek').innerText = dayOfWeek; // Define o dia da semana
-
-      // Verifica se é hora do café
-      checkCoffeeTime(hours, minutes);
     }
 
     function getWeather() {
       var apiKey = '16728ff298006508e873a90b6a4469d5';
-      var city = 'Joinville';
-      var state = 'SC';
+     const city = "Joinville";
+            const state = "br";
       var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + ',BR&appid=' + apiKey + '&units=metric&lang=pt_br';
 
       fetch(apiUrl)
@@ -153,15 +143,6 @@
         return 'fas fa-cloud'; // Nuvens
       } else {
         return 'fas fa-question'; // Ícone padrão para códigos desconhecidos
-      }
-    }
-
-    function checkCoffeeTime(hours, minutes) {
-      if ((hours === 8 && minutes === 19) || (hours === 15 && minutes === 19)) {
-        document.getElementById('coffeeAlert').style.display = 'block'; // Exibe o alerta
-        // Adicione aqui qualquer lógica para reproduzir um som de aviso
-      } else {
-        document.getElementById('coffeeAlert').style.display = 'none'; // Oculta o alerta
       }
     }
 
