@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -14,15 +14,15 @@
       color: #fff; /* Cor do texto */
     }
     #clock {
-      font-size: 120px;
+      font-size: 48px;
       margin-bottom: 10px;
     }
     #dayOfWeek {
-      font-size: 54px;
+      font-size: 24px;
       margin-bottom: 10px;
     }
     #city {
-      font-size: 40px;
+      font-size: 20px;
       margin-bottom: 20px;
     }
     .weather-info {
@@ -33,28 +33,28 @@
       margin-bottom: 20px;
     }
     #temperature {
-      font-size: 86px;
+      font-size: 36px;
     }
     #feelsLike {
-      font-size: 40px;
+      font-size: 20px;
       margin-top: 10px;
     }
     #minMaxTemp {
-      font-size: 30px;
+      font-size: 20px;
       margin-top: 10px;
     }
     #weatherDescription {
-      font-size: 40px;
+      font-size: 20px;
       margin-bottom: 10px;
     }
     #rainChance {
-      font-size: 40px;
+      font-size: 20px;
       margin-bottom: 20px;
     }
-    .weather-icon {
-      font-size: 88px;
-      vertical-align: middle;
-      margin-right: 10px;
+    .notification {
+      color: red;
+      font-size: 28px;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -70,7 +70,15 @@
   <div id="weatherDescription"></div>
   <div id="rainChance"></div>
 
+  <div id="notifications" class="notification"></div>
+
   <script>
+    var audioPlayed = {
+      breakfast: false,
+      lunch: false,
+      afternoonTea: false
+    };
+
     function updateClock() {
       var now = new Date();
       var hours = now.getHours();
@@ -90,9 +98,9 @@
     }
 
     function getWeather() {
-      var apiKey = '16728ff298006508e873a90b6a4469d5';
-     const city = "Joinville";
-            const state = "br";
+      var apiKey = 'SUA_CHAVE_DE_API';
+      var city = 'Joinville';
+      var state = 'SC';
       var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + ',BR&appid=' + apiKey + '&units=metric&lang=pt_br';
 
       fetch(apiUrl)
@@ -146,11 +154,54 @@
       }
     }
 
+    function setNotifications() {
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+
+      var notifications = document.getElementById('notifications');
+      notifications.innerHTML = ''; // Limpa as notificações
+
+      // Define os horários de notificação
+      var notificationTimes = [
+        { time: '09:18', message: 'Hora do Café da Manhã!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/café da manhã.mp3', type: 'breakfast' },
+        { time: '11:43', message: 'Hora do Almoço!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/almoço.mp3', type: 'breakfast' },
+        { time: '15:18', message: 'Hora do Café da Tarde!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/café da tarde.mp3', type: 'lunch' },
+        { time: '17:45', message: 'Hora da Zeladoria para encerrar o expediente!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/fim de expediente.mp3', type: 'afternoonTea' }
+      ];
+
+      // Verifica se está na hora de notificar
+      notificationTimes.forEach(notification => {
+        var notificationTime = new Date();
+        var [h, m] = notification.time.split(':');
+        notificationTime.setHours(h);
+        notificationTime.setMinutes(m);
+        notificationTime.setSeconds(0);
+
+        if (now >= notificationTime && now < new Date(notificationTime.getTime() + 60000)) { // Se estiver dentro do intervalo de 1 minuto
+          var notificationDiv = document.createElement('div');
+          notificationDiv.innerText = notification.message;
+          notifications.appendChild(notificationDiv);
+
+          if (!audioPlayed[notification.type]) {
+            var audio = new Audio(notification.sound);
+            audio.play(); // Toca o som de alarme
+            audioPlayed[notification.type] = true;
+            setTimeout(function() {
+              audioPlayed[notification.type] = false; // Restaura o estado do áudio
+            }, 60000); // Remove a notificação após 1 minuto
+          }
+        }
+      });
+    }
+
     updateClock();
     getWeather();
+    setNotifications();
 
     setInterval(updateClock, 1000);
-    setInterval(getWeather, 600000);
+    setInterval(getWeather, 30 * 60 * 1000); // Atualiza a cada 30 minutos
+    setInterval(setNotifications, 1000); // Verifica as notificações a cada segundo
   </script>
 </body>
 </html>
