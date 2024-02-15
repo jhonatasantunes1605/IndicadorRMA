@@ -17,7 +17,7 @@
     }
 
     .container {
-      max-width: 700px;
+      max-width: 1280px; /* Ajuste para o máximo da largura da tela */
       margin: 0 auto;
       padding: 20px;
     }
@@ -25,7 +25,7 @@
     h1 {
       text-align: center;
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-size: 32px;
+      font-size: 48px; /* Aumenta o tamanho do título */
       margin-bottom: 40px;
     }
 
@@ -43,66 +43,49 @@
     }
 
     .indicator-icon {
-      width: 98px;
-      height: 98px;
+      width: 140px; /* Aumenta o tamanho do ícone do indicador */
+      height: 140px; /* Aumenta o tamanho do ícone do indicador */
       border-radius: 50%;
       background-color: #db2322;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 10px;
-      font-size: 38px;
+      font-size: 56px; /* Aumenta o tamanho da fonte do ícone */
       color: #F5F5DC;
       cursor: pointer;
       animation: pulseAnimation 1s;
     }
 
-    @keyframes pulseAnimation {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.1);
-      }
-
-      100% {
-        transform: scale(1);
-      }
-    }
-
     .indicator-label {
-      font-size: 16px;
+      font-size: 24px; /* Aumenta o tamanho da fonte do rótulo */
       font-weight: bold;
       text-align: center;
       color: white;
       font-family: Trebuchet MS, sans-serif;
     }
 
-    /* Adicionando estilo para a cor verde */
     .indicator-icon.green {
       background-color: green;
     }
 
-    /* Adicionando estilo para a cor amarela */
     .indicator-icon.yellow {
       background-color: #228B22;
     }
 
     .indicator-icon.clock {
-      font-size: 50px;
+      font-size: 80px; /* Aumenta o tamanho do ícone do relógio */
       color: #FFFFFF;
       cursor: pointer;
       animation: pulseAnimation 1s;
     }
 
-    /* Add any additional styles specific to Indicator 2 */
     .container2 {
       margin-top: 50px;
     }
 
     h1.indicator2 {
-      font-size: 60px;
+      font-size: 72px; /* Aumenta o tamanho do título do indicador 2 */
       margin-bottom: 20px;
     }
 
@@ -246,14 +229,14 @@ $(document).ready(function () {
 
 <body>
   <div class="container">
-    <h1 style="font-family:Trebuchet MS, sans-serif; font-size: 59px; color: white; margin-bottom: 40px;">Abertura de Pacotes</h1>
+    <h1 style="font-family:Trebuchet MS, sans-serif; font-size: 79px; color: white; margin-bottom: 40px;">Abertura de Pacotes</h1>
     <div class="row" id="row1"></div>
     <div class="row" id="row2"></div>
   </div>
 
   <!-- Indicator 2 -->
   <div class="container container2">
-    <h1 class="indicator2" style="font-family:Trebuchet MS, sans-serif; color: white;">RMA</h1>
+    <h1 class="indicator2" style="font-family:Trebuchet MS, sans-serif; font-size: 79px; color: white;">RMA</h1>
     <div class="row" id="row3"></div>
     <div class="row" id="row4"></div>
   </div>
