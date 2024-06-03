@@ -1,209 +1,318 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relógio e Previsão do Tempo</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 20px; /* Adiciona margem superior para o relógio */
-      background-color: #1f1f1f; /* Cor de fundo escura */
-      color: #fff; /* Cor do texto */
-    }
-    #clock {
-      font-size: 208px;
-      margin-bottom: 10px;
-    }
-    #dayOfWeek {
-      font-size: 84px;
-      margin-bottom: 10px;
-    }
-    #city {
-      font-size: 60px;
-      margin-bottom: 20px;
-    }
-    .weather-info {
-      display: inline-block;
-      padding: 20px;
-      border-radius: 20px;
-      background-color: #333; /* Cor de fundo da caixa de informações */
-      margin-bottom: 20px;
-    }
-    #temperature {
-      font-size: 76px;
-    }
-    #feelsLike {
-      font-size: 70px;
-      margin-top: 10px;
-    }
-    #minMaxTemp {
-      font-size: 50px;
-      margin-top: 10px;
-    }
-    #weatherDescription {
-      font-size: 60px;
-      margin-bottom: 10px;
-    }
-    #rainChance {
-      font-size: 60px;
-      margin-bottom: 20px;
-    }
-    .notification {
-      color: red;
-      font-size: 38px;
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relógio, Previsão do Tempo e Exibir Mensagem</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Estilos do primeiro código */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 20px; /* Adiciona margem superior para o relógio */
+            background-color: #1f1f1f; /* Cor de fundo escura */
+            color: #fff; /* Cor do texto */
+        }
+        /* Estilos continuados do primeiro código */
+        #clock {
+            font-size: 208px;
+            margin-bottom: 10px;
+        }
+        #dayOfWeek {
+            font-size: 84px;
+            margin-bottom: 10px;
+        }
+        #city {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .weather-info {
+            display: inline-block;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #333; /* Cor de fundo da caixa de informações */
+            margin-bottom: 20px;
+        }
+        #temperature {
+            font-size: 76px;
+        }
+        #feelsLike {
+            font-size: 70px;
+            margin-top: 10px;
+        }
+        #minMaxTemp {
+            font-size: 50px;
+            margin-top: 10px;
+        }
+        #weatherDescription {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        #rainChance {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .notification {
+            color: red;
+            font-size: 38px;
+            margin-top: 20px;
+        }
+
+        /* Estilos do segundo código */
+        .container {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+           
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #textoMensagem {
+            margin-bottom: 20px;
+            font-size: 58px; /* Tamanho do texto */
+            font-family: 'Helvetica', sans-serif; /* Fonte do texto */
+            color: red; /* Cor do texto */
+        }
+
+        audio {
+            margin-bottom: 20px;
+            margin-left: auto;
+    margin-right: auto;
+           
+        }
+
+        footer {
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
 </head>
 <body>
-  <div id="clock"></div>
-  <div id="dayOfWeek"></div>
-  <div id="city"></div>
-  <div class="weather-info">
-    <div id="temperature"></div>
-    <div id="feelsLike"></div>
-    <div id="minMaxTemp"></div>
-  </div>
-  <div id="weatherDescription"></div>
-  <div id="rainChance"></div>
+    <!-- Elementos do primeiro código -->
+    <div id="clock"></div>
+    <div id="dayOfWeek"></div>
+    <div id="city"></div>
+    <div class="weather-info">
+        <div id="temperature"></div>
+        <div id="feelsLike"></div>
+        <div id="minMaxTemp"></div>
+    </div>
+    <div id="weatherDescription"></div>
+    <div id="rainChance"></div>
+    <div id="notifications" class="notification"></div>
 
-  <div id="notifications" class="notification"></div>
+    <!-- Elementos do segundo código -->
+    <div class="container">
+        <h1></h1>
+        <div id="textoMensagem"></div>
+        <audio id="audio" controls style="display:none;"></audio>
+    </div>
 
-  <script>
-    var audioPlayed = {
-      breakfast: false,
-      lunch: false,
-      afternoonTea: false
-    };
+    <script>
+        var audioPlayed = {
+            breakfast: false,
+            lunch: false,
+            afternoonTea: false
+        };
 
-    function updateClock() {
-      var now = new Date();
-      var hours = now.getHours();
-      var minutes = now.getMinutes();
-      var seconds = now.getSeconds();
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
 
-      var days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-      var dayOfWeek = days[now.getDay()]; // Obtém o dia da semana atual
+            var days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+            var dayOfWeek = days[now.getDay()]; // Obtém o dia da semana atual
 
-      hours = hours < 10 ? '0' + hours : hours;
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      seconds = seconds < 10 ? '0' + seconds : seconds;
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
 
-      var timeString = hours + ':' + minutes + ':' + seconds;
-      document.getElementById('clock').innerText = timeString;
-      document.getElementById('dayOfWeek').innerText = dayOfWeek; // Define o dia da semana
-    }
-
-    function getWeather() {
-      var apiKey = '16728ff298006508e873a90b6a4469d5';
-      var city = 'Joinville';
-      var state = 'SC';
-      var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + ',BR&appid=' + apiKey + '&units=metric&lang=pt_br';
-
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-          console.log('Resposta da API:', data);
-
-          if (data && data.name && data.sys && data.sys.country && data.main && data.main.temp && data.main.feels_like && data.main.temp_min && data.main.temp_max && data.weather && data.weather.length > 0 && data.weather[0].description && data.clouds && data.clouds.all) {
-            var city = data.name;
-            var temperature = data.main.temp;
-            var feelsLike = data.main.feels_like;
-            var temperatureMin = data.main.temp_min;
-            var temperatureMax = data.main.temp_max;
-            var weatherConditionCode = data.weather[0].id; // Código de condição do tempo
-
-            var iconClass = getWeatherIcon(weatherConditionCode);
-
-            document.getElementById('city').innerText = 'Joinville-SC';
-            document.getElementById('temperature').innerHTML = `<i class="${iconClass} weather-icon"></i>${temperature}°C`;
-            document.getElementById('feelsLike').innerText = `Sensação Térmica: ${feelsLike}°C`;
-            document.getElementById('minMaxTemp').innerText = `Mínima: ${temperatureMin}°C / Máxima: ${temperatureMax}°C`;
-            document.getElementById('weatherDescription').innerText = data.weather[0].description;
-            document.getElementById('rainChance').innerText = `Chance de Chuva: ${data.clouds.all}%`;
-          } else {
-            console.error('Dados de clima inválidos:', data);
-            document.getElementById('temperature').innerText = 'Dados de clima inválidos';
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao obter o clima:', error);
-          document.getElementById('temperature').innerText = 'Erro ao obter o clima';
-        });
-    }
-
-    function getWeatherIcon(weatherConditionCode) {
-      // Mapeia o código de condição do tempo para ícones Font Awesome
-      if (weatherConditionCode >= 200 && weatherConditionCode < 300) {
-        return 'fas fa-bolt'; // Trovão
-      } else if (weatherConditionCode >= 300 && weatherConditionCode < 600) {
-        return 'fas fa-cloud-rain'; // Chuva
-      } else if (weatherConditionCode >= 600 && weatherConditionCode < 700) {
-        return 'fas fa-snowflake'; // Neve
-      } else if (weatherConditionCode >= 700 && weatherConditionCode < 800) {
-        return 'fas fa-smog'; // Neblina, fumaça, etc.
-      } else if (weatherConditionCode === 800) {
-        return 'fas fa-sun'; // Céu limpo
-      } else if (weatherConditionCode >= 801 && weatherConditionCode < 900) {
-        return 'fas fa-cloud'; // Nuvens
-      } else {
-        return 'fas fa-question'; // Ícone padrão para códigos desconhecidos
-      }
-    }
-
-    function setNotifications() {
-      var now = new Date();
-      var hours = now.getHours();
-      var minutes = now.getMinutes();
-
-      var notifications = document.getElementById('notifications');
-      notifications.innerHTML = ''; // Limpa as notificações
-
-      // Define os horários de notificação
-      var notificationTimes = [
-        { time: '09:18', message: 'Hora do Café da Manhã!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/café da manhã.mp3', type: 'breakfast' },
-        { time: '11:43', message: 'Hora do Almoço!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/almoço.mp3', type: 'breakfast' },
-        { time: '15:18', message: 'Hora do Café da Tarde!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/café da tarde.mp3', type: 'lunch' },
-        { time: '17:45', message: 'Hora da Zeladoria para encerrar o expediente!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/fim de expediente.mp3', type: 'afternoonTea' },
-        { time: '18:00', message: '👋', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/tchau.mp3', type: 'timebye' }
-      
-      ];
-
-      // Verifica se está na hora de notificar
-      notificationTimes.forEach(notification => {
-        var notificationTime = new Date();
-        var [h, m] = notification.time.split(':');
-        notificationTime.setHours(h);
-        notificationTime.setMinutes(m);
-        notificationTime.setSeconds(0);
-
-        if (now >= notificationTime && now < new Date(notificationTime.getTime() + 60000)) { // Se estiver dentro do intervalo de 1 minuto
-          var notificationDiv = document.createElement('div');
-          notificationDiv.innerText = notification.message;
-          notifications.appendChild(notificationDiv);
-
-          if (!audioPlayed[notification.type]) {
-            var audio = new Audio(notification.sound);
-            audio.play(); // Toca o som de alarme
-            audioPlayed[notification.type] = true;
-            setTimeout(function() {
-              audioPlayed[notification.type] = false; // Restaura o estado do áudio
-            }, 60000); // Remove a notificação após 1 minuto
-          }
+            var timeString = hours + ':' + minutes + ':' + seconds;
+            document.getElementById('clock').innerText = timeString;
+            document.getElementById('dayOfWeek').innerText = dayOfWeek; // Define o dia da semana
         }
-      });
-    }
 
-    updateClock();
-    getWeather();
-    setNotifications();
+        function getWeather() {
+            var apiKey = '16728ff298006508e873a90b6a4469d5';
+            var city = 'Joinville';
+            var state = 'SC';
+            var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + ',BR&appid=' + apiKey + '&units=metric&lang=pt_br';
 
-    setInterval(updateClock, 1000);
-    setInterval(getWeather, 30 * 60 * 1000); // Atualiza a cada 30 minutos
-    setInterval(setNotifications, 1000); // Verifica as notificações a cada segundo
-  </script>
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Resposta da API:', data);
+
+                    if (data && data.name && data.sys && data.sys.country && data.main && data.main.temp && data.main.feels_like && data.main.temp_min && data.main.temp_max && data.weather && data.weather.length > 0 && data.weather[0].description && data.clouds && data.clouds.all) {
+                        var city = data.name;
+                        var temperature = data.main.temp;
+                        var feelsLike = data.main.feels_like;
+                        var temperatureMin = data.main.temp_min;
+                        var temperatureMax = data.main.temp_max;
+                        var weatherConditionCode = data.weather[0].id; // Código de condição do tempo
+
+                        var iconClass = getWeatherIcon(weatherConditionCode);
+
+                        document.getElementById('city').innerText = 'Joinville-SC';
+                        document.getElementById('temperature').innerHTML = `<i class="${iconClass} weather-icon"></i>${temperature}°C`;
+                        document.getElementById('feelsLike').innerText = `Sensação Térmica: ${feelsLike}°C`;
+                        document.getElementById('minMaxTemp').innerText = `Mínima: ${temperatureMin}°C / Máxima: ${temperatureMax}°C`;
+                        document.getElementById('weatherDescription').innerText = data.weather[0].description;
+                        document.getElementById('rainChance').innerText = `Chance de Chuva: ${data.clouds.all}%`;
+                    } else {
+                        console.error('Dados de clima inválidos:', data);
+                        document.getElementById('temperature').innerText = 'Dados de clima inválidos';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao obter o clima:', error);
+                    document.getElementById('temperature').innerText = 'Erro ao obter o clima';
+                });
+        }
+
+                function getWeatherIcon(weatherConditionCode) {
+            // Mapeia o código de condição do tempo para ícones Font Awesome
+            if (weatherConditionCode >= 200 && weatherConditionCode < 300) {
+                return 'fas fa-bolt'; // Trovão
+            } else if (weatherConditionCode >= 300 && weatherConditionCode < 600) {
+                return 'fas fa-cloud-rain'; // Chuva
+            } else if (weatherConditionCode >= 600 && weatherConditionCode < 700) {
+                return 'fas fa-snowflake'; // Neve
+            } else if (weatherConditionCode >= 700 && weatherConditionCode < 800) {
+                return 'fas fa-smog'; // Neblina, fumaça, etc.
+            } else if (weatherConditionCode === 800) {
+                return 'fas fa-sun'; // Céu limpo
+            } else if (weatherConditionCode >= 801 && weatherConditionCode < 900) {
+                return 'fas fa-cloud'; // Nuvens
+            } else {
+                return 'fas fa-question'; // Ícone padrão para códigos desconhecidos
+            }
+        }
+
+        function setNotifications() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+
+            var notifications = document.getElementById('notifications');
+            notifications.innerHTML = ''; // Limpa as notificações
+
+            // Define os horários de notificação
+            var notificationTimes = [
+                { time: '09:18', message: 'Hora do Café da Manhã!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/café da manhã.mp3', type: 'breakfast' },
+                { time: '11:43', message: 'Hora do Almoço!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/almoço.mp3', type: 'breakfast' },
+                { time: '15:18', message: 'Hora do Café da Tarde!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/café da tarde.mp3', type: 'lunch' },
+                { time: '17:45', message: 'Hora da Zeladoria para encerrar o expediente!', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/fim de expediente.mp3', type: 'afternoonTea' },
+                { time: '18:00', message: '👋', sound: 'https://raw.githubusercontent.com/jhonatasantunes1605/IndicadorRMA/master/tchau.mp3', type: 'timebye' }
+              
+            ];
+
+            // Verifica se está na hora de notificar
+            notificationTimes.forEach(notification => {
+                var notificationTime = new Date();
+                var [h, m] = notification.time.split(':');
+                notificationTime.setHours(h);
+                notificationTime.setMinutes(m);
+                notificationTime.setSeconds(0);
+
+                if (now >= notificationTime && now < new Date(notificationTime.getTime() + 60000)) { // Se estiver dentro do intervalo de 1 minuto
+                    var notificationDiv = document.createElement('div');
+                    notificationDiv.innerText = notification.message;
+                    notifications.appendChild(notificationDiv);
+
+                    if (!audioPlayed[notification.type]) {
+                        var audio = new Audio(notification.sound);
+                        audio.play(); // Toca o som de alarme
+                        audioPlayed[notification.type] = true;
+                        setTimeout(function() {
+                            audioPlayed[notification.type] = false; // Restaura o estado do áudio
+                        }, 60000); // Remove a notificação após 1 minuto
+                    }
+                }
+            });
+        }
+
+        function exibirMensagem(texto) {
+            const textoMensagemElement = document.getElementById('textoMensagem');
+            textoMensagemElement.innerText = texto;
+        }
+
+        function reproduzirAudio(audioUrl) {
+            const audioElement = document.getElementById('audio');
+            audioElement.src = audioUrl;
+            audioElement.style.display = 'block';
+            audioElement.play();
+        }
+
+        function obterUltimaMensagemId() {
+            return localStorage.getItem('ultimaMensagemId');
+        }
+
+        function definirUltimaMensagemId(id) {
+            localStorage.setItem('ultimaMensagemId', id);
+        }
+
+        function obterMensagemDoBack4App() {
+            fetch('https://parseapi.back4app.com/classes/Mensagem?order=-createdAt&limit=1', {
+                method: 'GET',
+                headers: {
+                    'X-Parse-Application-Id': 'R81zIneFItjFVf5EnrCSjk62L5pMcHej5Ghtx3Wb',
+                    'X-Parse-REST-API-Key': 'Ekj67mhmcNDUgaDHywXjnBlhjvpSeJ2qkNL9vOdf'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao obter mensagem');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.results && data.results.length > 0) {
+                    const mensagemData = data.results[0];
+                    const ultimaMensagemId = obterUltimaMensagemId();
+
+                    if (mensagemData.objectId !== ultimaMensagemId) {
+                        definirUltimaMensagemId(mensagemData.objectId);
+                        if (mensagemData.audioUrl) {
+                            reproduzirAudio(mensagemData.audioUrl);
+                        } else {
+                            console.log('Nenhum áudio encontrado');
+                        }
+                        if (mensagemData.mensagem) {
+                            exibirMensagem(mensagemData.mensagem);
+                        } else {
+                            exibirMensagem('');
+                        }
+                    }
+                } else {
+                    console.log('');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+        }
+
+        setInterval(updateClock, 1000);
+        setInterval(getWeather, 30 * 60 * 1000); // Atualiza a cada 30 minutos
+        setInterval(setNotifications, 1000); // Verifica as notificações a cada segundo
+        setInterval(obterMensagemDoBack4App, 5000); // Verifica a cada 5 segundos
+
+        window.onload = function() {
+            updateClock();
+            getWeather();
+            setNotifications();
+            obterMensagemDoBack4App();
+        }
+    </script>
 </body>
 </html>
+
